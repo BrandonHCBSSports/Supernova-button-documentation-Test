@@ -1,0 +1,2 @@
+   cd /Users/HernandB0613/button-documentation-site
+   ./push-to-github.sh YOUR_GITHUB_USERNAME button-documentation
