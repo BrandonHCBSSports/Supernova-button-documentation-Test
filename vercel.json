@@ -3,7 +3,7 @@
       { "src": "HernandB0613/button-documentation.html", "use": "@vercel/static" }
     ],
     "routes": [
-      { "src": "/(.*)", "dest": "/HernandB0613/button-documentation.html" }
+      { "src": "/(.*)", "dest": "/button-documentation.html" }
     ]
   }
   
