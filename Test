@@ -1,2 +1,1651 @@
-   cd /Users/HernandB0613/button-documentation-site
-   ./push-to-github.sh YOUR_GITHUB_USERNAME button-documentation
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Component Documentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #004ace;
+            --primary-text: #ffffff;
+            --secondary-bg: #e8e8e8;
+            --secondary-text: #181818;
+            --secondary-border: #e8e8e8;
+            --tertiary-bg: #ffffff;
+            --tertiary-border: #dcdcdc;
+            --disabled-bg: #dcdcdc;
+            --disabled-text: #ababab;
+            --loading-bg: #dcdcdc;
+            --border-radius: 8px;
+            --spacing-25: 4px;
+            --spacing-50: 8px;
+            --spacing-75: 12px;
+            --spacing-150: 24px;
+            --text-primary: #111111;
+            --text-secondary: #666666;
+            --neutral-0: #f2f2f2;
+            --neutral-30: #ababab;
+            --neutral-50: #767676;
+            --blue-0: #f5f8ff;
+            --green-30: #58ed78;
+            --yellow-30: #f2ce3f;
+            --font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-family-secondary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            /* Light mode background colors */
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafafa;
+            --bg-tertiary: #f2f2f2;
+            --border-color: rgba(0,0,0,0.1);
+            --border-color-light: rgba(0,0,0,0.05);
+            --sidebar-bg: #ffffff;
+            --top-nav-bg: #ffffff;
+            --hero-bg: #fafafa;
+            --table-bg: #ffffff;
+            --table-header-bg: rgba(0,0,0,0.05);
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #0055ff;
+            --primary-text: #ffffff;
+            --secondary-bg: #2a2a2a;
+            --secondary-text: #e8e8e8;
+            --secondary-border: #2a2a2a;
+            --tertiary-bg: #1a1a1a;
+            --tertiary-border: #3a3a3a;
+            --disabled-bg: #3a3a3a;
+            --disabled-text: #666666;
+            --loading-bg: #3a3a3a;
+            --text-primary: #e8e8e8;
+            --text-secondary: #ababab;
+            --neutral-0: #1a1a1a;
+            --neutral-30: #666666;
+            --neutral-50: #ababab;
+            --blue-0: #1a1a2a;
+            --green-30: #58ed78;
+            --yellow-30: #f2ce3f;
+            /* Dark mode background colors */
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-tertiary: #1a1a1a;
+            --border-color: rgba(255,255,255,0.1);
+            --border-color-light: rgba(255,255,255,0.05);
+            --sidebar-bg: #111111;
+            --top-nav-bg: #111111;
+            --hero-bg: #1a1a1a;
+            --table-bg: #1a1a1a;
+            --table-header-bg: rgba(255,255,255,0.05);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            display: flex;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-family-secondary);
+        }
+
+        /* Left Sidebar */
+        .sidebar {
+            width: 360px;
+            min-height: 100vh;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color-light);
+            padding: 40px 20px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            z-index: 10;
+            transition: width 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            width: 60px;
+            padding: 40px 8px;
+        }
+
+        .sidebar.collapsed .sidebar-item span,
+        .sidebar.collapsed .sidebar-submenu,
+        .sidebar.collapsed .chevron {
+            opacity: 0;
+            pointer-events: none;
+            overflow: hidden;
+            width: 0;
+        }
+
+        .sidebar.collapsed .sidebar-toggle {
+            right: 14px;
+        }
+
+        .sidebar-toggle {
+            position: absolute;
+            top: 20px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--neutral-0);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            z-index: 20;
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--neutral-30);
+        }
+
+        .sidebar-toggle svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.collapsed .sidebar-toggle svg {
+            transform: rotate(180deg);
+        }
+
+        .sidebar-item {
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 18px;
+            line-height: 22px;
+            color: var(--text-primary);
+            transition: background 0.2s, opacity 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .sidebar.collapsed .sidebar-item {
+            padding: 8px;
+            justify-content: center;
+        }
+
+        .sidebar-item:hover {
+            background: var(--neutral-0);
+        }
+
+        .sidebar-item.active {
+            background: var(--blue-0);
+            color: var(--primary-bg);
+        }
+
+        .sidebar-item.has-children {
+            font-weight: 600;
+        }
+
+        .sidebar-submenu {
+            padding-left: 8px;
+            margin-top: 8px;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar-submenu .sidebar-item {
+            font-size: 16px;
+            line-height: 20px;
+            padding-left: 16px;
+        }
+
+        .sidebar-submenu .sidebar-item.active {
+            background: var(--blue-0);
+            color: var(--primary-bg);
+        }
+
+        .chevron {
+            width: 24px;
+            height: 24px;
+            opacity: 0.5;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 360px;
+            flex: 1;
+            padding: 40px 240px 120px 40px;
+            transition: margin-left 0.3s ease;
+        }
+
+        .sidebar.collapsed ~ header {
+            left: 60px !important;
+        }
+
+        .sidebar.collapsed ~ .main-content {
+            margin-left: 60px;
+        }
+
+        /* Header */
+        .page-header {
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-family: var(--font-family-secondary);
+            font-size: 48px;
+            line-height: 34px;
+            font-weight: 400;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .page-description {
+            font-size: 24px;
+            line-height: 26px;
+            font-weight: 400;
+            color: var(--text-primary);
+            max-width: 900px;
+        }
+
+        /* Hero Image */
+        .hero-image {
+            width: 100%;
+            height: 435px;
+            border-radius: 20px;
+            background: var(--hero-bg);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            font-size: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        .hero-image::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200"><rect fill="rgba(255,255,255,0.1)" width="80" height="40" x="0" y="0" rx="8"/><rect fill="rgba(255,255,255,0.1)" width="80" height="40" x="100" y="0" rx="8"/><rect fill="rgba(255,255,255,0.1)" width="80" height="40" x="200" y="0" rx="8"/><rect fill="rgba(255,255,255,0.1)" width="80" height="40" x="0" y="60" rx="8"/><rect fill="rgba(255,255,255,0.1)" width="80" height="40" x="100" y="60" rx="8"/><rect fill="rgba(255,255,255,0.1)" width="80" height="40" x="200" y="60" rx="8"/></svg>');
+            opacity: 0.3;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 40px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 40px;
+        }
+
+        .tab {
+            padding: 16px 0;
+            font-size: 16px;
+            line-height: 18px;
+            color: var(--text-primary);
+            cursor: pointer;
+            border-bottom: 4px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: var(--text-primary);
+            border-bottom-color: var(--text-primary);
+        }
+
+        /* Content Sections */
+        .content-section {
+            margin-bottom: 60px;
+        }
+
+        .section-header {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: var(--font-family-secondary);
+            font-size: 32px;
+            line-height: 34px;
+            font-weight: 400;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            scroll-margin-top: 100px;
+        }
+
+        .section-description {
+            font-size: 18px;
+            line-height: 22px;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        .subsection-title {
+            font-family: var(--font-family-secondary);
+            font-size: 24px;
+            line-height: 26px;
+            font-weight: 400;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            scroll-margin-top: 100px;
+        }
+
+        /* Theme Tabs */
+        .theme-tabs {
+            display: flex;
+            padding: 0 20px;
+            margin-bottom: 12px;
+        }
+
+        .theme-tab {
+            padding: 16px 20px;
+            font-size: 16px;
+            line-height: 18px;
+            color: var(--text-primary);
+            cursor: pointer;
+            border-bottom: 4px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .theme-tab.active {
+            color: var(--primary-bg);
+            border-bottom-color: var(--primary-bg);
+        }
+
+        /* Token Table */
+        .token-table-container {
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 12px;
+            margin-bottom: 40px;
+            background: var(--table-bg);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .token-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color-light);
+        }
+
+        .token-table thead {
+            background: var(--table-header-bg);
+        }
+
+        .token-table th {
+            padding: 20px;
+            text-align: left;
+            font-size: 16px;
+            line-height: 20px;
+            font-weight: 400;
+            color: var(--text-primary);
+            border-right: 1px solid var(--border-color-light);
+        }
+
+        .token-table th:last-child {
+            border-right: none;
+        }
+
+        .token-table td {
+            padding: 20px;
+            font-size: 16px;
+            line-height: 20px;
+            color: var(--text-primary);
+            border-top: 1px solid var(--border-color-light);
+            border-right: 1px solid var(--border-color-light);
+        }
+
+        .token-table td:last-child {
+            border-right: none;
+        }
+
+        .token-table tbody tr {
+            border-bottom: 1px solid var(--border-color-light);
+        }
+
+        .color-swatch {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid var(--neutral-30);
+            display: inline-block;
+        }
+
+        /* Do's and Don'ts */
+        .guidance-box {
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .guidance-box.do {
+            border-top: 4px solid var(--bg-primary);
+        }
+
+        .guidance-box.caution {
+            border-top: 4px solid var(--bg-primary);
+        }
+
+        .guidance-content {
+            padding: 12px;
+        }
+
+        .guidance-box.do .guidance-content {
+            background: var(--green-30);
+        }
+
+        .guidance-box.caution .guidance-content {
+            background: var(--yellow-30);
+        }
+
+        .guidance-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            font-size: 18px;
+            line-height: 22px;
+            font-weight: 400;
+        }
+
+        .guidance-icon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .guidance-text {
+            padding: 12px;
+            font-size: 16px;
+            line-height: 20px;
+            color: var(--text-primary);
+        }
+
+        /* Visual Example */
+        .visual-example {
+            background: var(--blue-0);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .mobile-mockup {
+            background: #101010;
+            border: 8px solid var(--neutral-50);
+            border-radius: 20px;
+            width: 294px;
+            height: 600px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .mobile-mockup.light {
+            background: var(--bg-primary);
+            border-color: var(--neutral-50);
+        }
+
+        /* Two Column Layout */
+        .two-column {
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+        }
+
+        .two-column .left {
+            flex: 1;
+        }
+
+        .two-column .right {
+            width: 500px;
+            flex-shrink: 0;
+        }
+
+        /* On This Page Sidebar */
+        .on-this-page {
+            width: 180px;
+            border-left: 2px solid var(--border-color);
+            padding-left: 16px;
+            position: fixed;
+            top: 100px;
+            right: 40px;
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+            z-index: 50;
+            transition: border-color 0.3s ease;
+        }
+
+        .on-this-page-title {
+            padding: 8px 16px 8px 0;
+            font-size: 16px;
+            line-height: 18px;
+            font-weight: 400;
+            color: var(--text-primary);
+            text-transform: uppercase;
+        }
+
+        .on-this-page-item {
+            padding: 8px 16px;
+            font-size: 16px;
+            line-height: 18px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: color 0.2s;
+            text-decoration: none;
+            display: block;
+            border-left: 2px solid transparent;
+            margin-left: -16px;
+            padding-left: 16px;
+        }
+
+        .on-this-page-item:hover {
+            color: var(--primary-bg);
+        }
+
+        .on-this-page-item.active {
+            border-left-color: var(--text-primary);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            display: flex;
+            gap: 16px;
+            margin-top: 60px;
+        }
+
+        .nav-pill {
+            flex: 1;
+            background: var(--neutral-0);
+            border-radius: 24px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-pill-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-pill-label {
+            font-size: 18px;
+            line-height: 22px;
+            color: var(--text-primary);
+        }
+
+        .nav-pill-title {
+            font-family: var(--font-family-secondary);
+            font-size: 32px;
+            line-height: 34px;
+            color: var(--text-primary);
+        }
+
+        .nav-arrow {
+            width: 40px;
+            height: 40px;
+            opacity: 0.5;
+        }
+
+        /* Header Actions - All icons inherit color from here */
+        .header-actions {
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .header-actions {
+            color: #ffffff;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            transition: opacity 0.3s ease;
+            color: inherit;
+        }
+
+        .dark-mode-toggle:hover {
+            opacity: 0.7;
+        }
+
+        .dark-mode-toggle svg {
+            color: inherit;
+        }
+
+        .dark-mode-toggle .icon-dark {
+            display: none;
+        }
+
+        [data-theme="dark"] .dark-mode-toggle .icon-light {
+            display: none;
+        }
+
+        [data-theme="dark"] .dark-mode-toggle .icon-dark {
+            display: block;
+        }
+
+        /* Search Icon */
+        .search-icon {
+            color: inherit;
+        }
+
+        /* Button Examples */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-50);
+            font-family: var(--font-family-primary);
+            font-weight: 500;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-large {
+            height: 48px;
+            padding: 0 var(--spacing-150);
+            font-size: 18px;
+            line-height: 1.25;
+            letter-spacing: -0.25px;
+        }
+
+        .btn-medium {
+            height: 32px;
+            padding: 0 var(--spacing-75);
+            font-size: 14px;
+            line-height: 14px;
+        }
+
+        .btn-small {
+            height: 28px;
+            padding: 0 var(--spacing-75);
+            font-size: 12px;
+            line-height: 12px;
+        }
+
+        .btn-primary {
+            background: var(--primary-bg);
+            color: var(--primary-text);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-bg);
+            color: var(--secondary-text);
+            border: 1px solid var(--secondary-border);
+        }
+
+        .btn-tertiary {
+            background: var(--tertiary-bg);
+            color: var(--secondary-text);
+            border: 1px solid var(--tertiary-border);
+        }
+
+        .btn-disabled {
+            background: var(--disabled-bg);
+            color: var(--disabled-text);
+            border: 1px solid var(--disabled-border);
+        }
+
+        .btn-loading {
+            background: var(--loading-bg);
+            color: var(--disabled-text);
+        }
+
+        .loading-dots {
+            display: inline-flex;
+            gap: 4px;
+        }
+
+        .loading-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--disabled-text);
+            animation: loading 1.4s infinite ease-in-out;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes loading {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* List Styles */
+        ul {
+            list-style: disc;
+            padding-left: 24px;
+            margin: 16px 0;
+        }
+
+        ul li {
+            margin-bottom: 8px;
+            font-size: 18px;
+            line-height: 22px;
+        }
+
+        ul li a {
+            text-decoration: underline;
+            color: var(--text-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-content {
+                padding: 40px 40px 120px 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            .two-column {
+                flex-direction: column;
+            }
+            .on-this-page {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Left Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M15 18l-6-6 6-6"/>
+            </svg>
+        </button>
+        <div class="sidebar-item">
+            <span>Home</span>
+        </div>
+        <div class="sidebar-item">
+            <span>Get started</span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M9 18l6-6-6-6" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+        <div class="sidebar-item">
+            <span>What's new</span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M9 18l6-6-6-6" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+        <div class="sidebar-item has-children">
+            <span>Fundamentals</span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M9 18l6-6-6-6" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+        <div class="sidebar-item has-children">
+            <span>Components</span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="transform: rotate(90deg);">
+                <path d="M9 18l6-6-6-6" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+        <div class="sidebar-submenu">
+            <div class="sidebar-item">
+                <span>Article Card</span>
+            </div>
+            <div class="sidebar-item active">
+                <span>Button</span>
+            </div>
+            <div class="sidebar-item">
+                <span>Cards</span>
+            </div>
+            <div class="sidebar-item">
+                <span>Carousel</span>
+            </div>
+            <div class="sidebar-item">
+                <span>Dividers</span>
+            </div>
+            <div class="sidebar-item">
+                <span>Lists</span>
+            </div>
+            <div class="sidebar-item">
+                <span>Menus</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Top Header -->
+    <header class="top-nav" style="position: fixed; top: 0; left: 360px; right: 0; height: 60px; border-bottom: 1px solid var(--border-color); background: var(--top-nav-bg); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; transition: left 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;">
+        <div style="display: flex; align-items: center; gap: 4px;">
+            <div style="width: 24px; height: 24px; background: var(--primary-bg); border-radius: 4px;"></div>
+            <span style="font-size: 18px; line-height: 22px; font-weight: 700; color: var(--text-primary);">Playbook</span>
+            <span style="font-size: 18px; line-height: 22px; font-weight: 400; color: var(--text-primary);">CBS Sports App</span>
+        </div>
+        <div class="header-actions" style="display: flex; align-items: center; gap: 16px;">
+            <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode" style="width: 32px; height: 32px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0;">
+                <svg class="icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;">
+                    <circle cx="12" cy="12" r="5"/>
+                    <line x1="12" y1="1" x2="12" y2="3"/>
+                    <line x1="12" y1="21" x2="12" y2="23"/>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                    <line x1="1" y1="12" x2="3" y2="12"/>
+                    <line x1="21" y1="12" x2="23" y2="12"/>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </svg>
+                <svg class="icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px; display: none;">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+            <div class="search-icon" style="width: 24px; height: 24px; cursor: pointer;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="m21 21-4.35-4.35"/>
+                </svg>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" style="margin-top: 60px;">
+        <div class="page-header">
+            <h1 class="page-title">Button</h1>
+            <p class="page-description">Buttons prompt the user to perform an action</p>
+        </div>
+
+        <div class="hero-image">
+            <div style="position: relative; z-index: 1; text-align: center;">
+                <button class="btn btn-primary btn-large" style="margin: 10px;">Primary</button>
+                <button class="btn btn-secondary btn-large" style="margin: 10px;">Secondary</button>
+                <button class="btn btn-tertiary btn-large" style="margin: 10px;">Tertiary</button>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab">Overview</div>
+            <div class="tab active">Prime</div>
+            <div class="tab">Toggle</div>
+            <div class="tab">Pinned</div>
+            <div class="tab">Destructive</div>
+            <div class="tab">Preset</div>
+        </div>
+
+        <!-- Content with Right Sidebar -->
+        <div class="two-column">
+            <div class="left">
+                <!-- Prime Button Section -->
+                <div class="content-section" id="prime-button">
+                    <div class="section-header">
+                        <h2 class="section-title" id="prime-button-title">Prime button</h2>
+                        <div class="two-column" style="margin-top: 20px; gap: 40px;">
+                            <div class="left">
+                                <p class="section-description" style="margin-bottom: 0;">Each page should have one primary button, with other actions shown as secondary or tertiary buttons.</p>
+                                <p class="section-description" style="margin-top: 0; margin-bottom: 0;">&nbsp;</p>
+                                <p class="section-description" style="margin-top: 0;">Reserve buttons for actions, not page navigation. Use <a href="#" style="text-decoration: underline;">Text Links</a> when the intended action is to take the user to a new page.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Types Section -->
+                    <div class="content-section" id="types" style="margin-top: 60px;">
+                        <h3 class="subsection-title" id="types-title">Types</h3>
+                        
+                        <!-- Types Visual Grid -->
+                        <div style="background: var(--neutral-0); border-radius: 24px; padding: 40px; margin: 20px 0;">
+                            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 40px;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div style="width: 28px; height: 28px; background: var(--text-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--bg-primary); font-size: 16px; font-weight: 500;">1</div>
+                                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                                        <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                                            <div style="width: 28px; height: 28px; background: var(--text-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--bg-primary); font-size: 16px; font-weight: 500;">A</div>
+                                            <button class="btn btn-primary btn-large">Button</button>
+                                        </div>
+                                        <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                                            <div style="width: 28px; height: 28px; background: var(--text-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--bg-primary); font-size: 16px; font-weight: 500;">B</div>
+                                            <button class="btn btn-primary btn-medium">Button</button>
+                                        </div>
+                                        <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                                            <div style="width: 28px; height: 28px; background: var(--text-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--bg-primary); font-size: 16px; font-weight: 500;">C</div>
+                                            <button class="btn btn-primary btn-small">Button</button>
+                                        </div>
+                                        <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                                            <div style="width: 28px; height: 28px; background: var(--text-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--bg-primary); font-size: 16px; font-weight: 500;">D</div>
+                                            <button class="btn btn-loading btn-small" disabled>
+                                                <span class="loading-dots">
+                                                    <span></span>
+                                                    <span></span>
+                                                    <span></span>
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                                            <div style="width: 28px; height: 28px; background: var(--text-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--bg-primary); font-size: 16px; font-weight: 500;">E</div>
+                                            <button class="btn btn-disabled btn-small" disabled>Button</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 40px;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div style="width: 28px; height: 28px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: 500;">2</div>
+                                    <div style="display: flex; gap: 12px;">
+                                        <button class="btn btn-secondary btn-large">Button</button>
+                                        <button class="btn btn-secondary btn-medium">Button</button>
+                                        <button class="btn btn-secondary btn-small">Button</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 20px; align-items: center;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div style="width: 28px; height: 28px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: 500;">3</div>
+                                    <div style="display: flex; gap: 12px;">
+                                        <button class="btn btn-tertiary btn-large">Button</button>
+                                        <button class="btn btn-tertiary btn-medium">Button</button>
+                                        <button class="btn btn-tertiary btn-small">Button</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 40px;">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tbody>
+                                    <tr>
+                                        <td style="vertical-align: top; padding-right: 40px; width: 50%;">
+                                            <p style="font-size: 18px; line-height: 22px; margin-bottom: 12px;">There are 3 Prime Button styles, in order of emphasis:</p>
+                                            <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 12px;">
+                                                <div style="width: 28px; height: 28px; background: var(--text-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--bg-primary); font-size: 16px; font-weight: 500;">1</div>
+                                                <span style="font-size: 18px; line-height: 22px;">Primary</span>
+                                            </div>
+                                            <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 12px;">
+                                                <div style="width: 28px; height: 28px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: 500;">2</div>
+                                                <span style="font-size: 18px; line-height: 22px;">Secondary</span>
+                                            </div>
+                                            <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 0;">
+                                                <div style="width: 28px; height: 28px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: 500;">3</div>
+                                                <span style="font-size: 18px; line-height: 22px;">Tertiary</span>
+                                            </div>
+                                        </td>
+                                        <td style="vertical-align: top; padding-left: 40px; width: 50%;">
+                                            <p style="font-size: 18px; line-height: 22px; margin-bottom: 12px;">Buttons have styles and states:</p>
+                                            <div style="font-size: 18px; line-height: 22px;">
+                                                <p style="margin-bottom: 4px;">A. Large</p>
+                                                <p style="margin-bottom: 4px;">B. Medium</p>
+                                                <p style="margin-bottom: 4px;">C. Small</p>
+                                                <p style="margin-bottom: 4px;">D. Loading</p>
+                                                <p style="margin-bottom: 4px;">E. Disabled</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Mode Tabs for Button Examples -->
+                    <div class="mode-tabs-types" style="display: flex; gap: 0; margin-top: 40px; margin-bottom: 0; border-bottom: none;">
+                        <div class="mode-tab-types active" data-mode-types="light" style="padding: 16px 20px; font-size: 16px; line-height: 18px; color: var(--primary-bg); cursor: pointer; border-bottom: 4px solid var(--primary-bg); background: transparent;">
+                            Light
+                        </div>
+                        <div class="mode-tab-types" data-mode-types="dark" style="padding: 16px 20px; font-size: 16px; line-height: 18px; color: var(--text-primary); cursor: pointer; border-bottom: 4px solid transparent; background: transparent;">
+                            Dark
+                        </div>
+                        <div class="mode-tab-types" data-mode-types="dynamic" style="padding: 16px 20px; font-size: 16px; line-height: 18px; color: var(--text-primary); cursor: pointer; border-bottom: 4px solid transparent; background: transparent;">
+                            Dynamic
+                        </div>
+                    </div>
+
+                    <!-- Primary Buttons Section -->
+                    <div class="content-section" style="margin-top: 40px;">
+                        <div class="two-column" style="gap: 40px;">
+                            <div class="left">
+                                <h3 style="font-size: 24px; line-height: 26px; font-weight: 700; margin-bottom: 20px;">Primary buttons</h3>
+                                <p style="font-size: 18px; line-height: 22px; margin-bottom: 0;">Use Primary buttons for actions that are a top priority in the context of the whole page.</p>
+                                <p style="font-size: 18px; line-height: 22px; margin-top: 0; margin-bottom: 0;">&nbsp;</p>
+                                <p style="font-size: 18px; line-height: 22px; margin-top: 0;">Consider using Primary buttons sparingly, as over saturating the page with it will reduce its effectiveness.</p>
+                            </div>
+                            <div class="right">
+                                <!-- Light Mode -->
+                                <div class="button-example-mode" data-mode-types="light" style="background: var(--neutral-0); border-radius: 24px; padding: 40px 20px; height: 240px; display: flex; align-items: center; justify-content: center;">
+                                    <button class="btn btn-large" style="background: #004ace; color: #ffffff; border: none;">Button</button>
+                                </div>
+                                <!-- Dark Mode -->
+                                <div class="button-example-mode" data-mode-types="dark" style="display: none; background: #1a1a1a; border-radius: 24px; padding: 40px 20px; height: 240px; align-items: center; justify-content: center;">
+                                    <button class="btn btn-large" style="background: #0055ff; color: #ffffff; border: none;">Button</button>
+                                </div>
+                                <!-- Dynamic Mode -->
+                                <div class="button-example-mode" data-mode-types="dynamic" style="display: none; background: #7C3AED; border-radius: 24px; padding: 40px 20px; height: 240px; align-items: center; justify-content: center;">
+                                    <button class="btn btn-large" style="background: var(--bg-primary); color: var(--text-primary); border: none;">Button</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Secondary Buttons Section -->
+                    <div class="content-section" style="margin-top: 40px;">
+                        <div class="two-column" style="gap: 40px;">
+                            <div class="left">
+                                <h3 style="font-size: 24px; line-height: 26px; font-weight: 700; margin-bottom: 20px;">Secondary buttons</h3>
+                                <p style="font-size: 18px; line-height: 22px;">Consider using a Secondary button for most scenarios if the action is not a top priority.</p>
+                            </div>
+                            <div class="right">
+                                <!-- Light Mode -->
+                                <div class="button-example-mode" data-mode-types="light" style="background: var(--neutral-0); border-radius: 24px; padding: 40px 20px; height: 240px; display: flex; align-items: center; justify-content: center;">
+                                    <button class="btn btn-large" style="background: #e8e8e8; color: #181818; border: 1px solid #e8e8e8;">Button</button>
+                                </div>
+                                <!-- Dark Mode -->
+                                <div class="button-example-mode" data-mode-types="dark" style="display: none; background: #1a1a1a; border-radius: 24px; padding: 40px 20px; height: 240px; align-items: center; justify-content: center;">
+                                    <button class="btn btn-large" style="background: #2a2a2a; color: #e8e8e8; border: 1px solid #2a2a2a;">Button</button>
+                                </div>
+                                <!-- Dynamic Mode -->
+                                <div class="button-example-mode" data-mode-types="dynamic" style="display: none; background: #7C3AED; border-radius: 24px; padding: 40px 20px; height: 240px; align-items: center; justify-content: center;">
+                                    <button class="btn btn-large" style="background: rgba(255, 255, 255, 0.1); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.1);">Button</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tertiary Buttons Section -->
+                    <div class="content-section" style="margin-top: 40px;">
+                        <div class="two-column" style="gap: 40px;">
+                            <div class="left">
+                                <h3 style="font-size: 24px; line-height: 26px; font-weight: 700; margin-bottom: 20px;">Tertiary buttons</h3>
+                                <p style="font-size: 18px; line-height: 22px;">If the action is not a top priority and a Secondary button cannot be used, the Tertiary button is the way to go</p>
+                            </div>
+                            <div class="right">
+                                <!-- Light Mode -->
+                                <div class="button-example-mode" data-mode-types="light" style="background: var(--neutral-0); border-radius: 24px; padding: 40px 20px; height: 240px; display: flex; align-items: center; justify-content: center;">
+                                    <button class="btn btn-large" style="background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--tertiary-border);">Button</button>
+                                </div>
+                                <!-- Dark Mode -->
+                                <div class="button-example-mode" data-mode-types="dark" style="display: none; background: #1a1a1a; border-radius: 24px; padding: 40px 20px; height: 240px; align-items: center; justify-content: center;">
+                                    <button class="btn btn-large" style="background: #1a1a1a; color: #e8e8e8; border: 1px solid #3a3a3a;">Button</button>
+                                </div>
+                                <!-- Dynamic Mode -->
+                                <div class="button-example-mode" data-mode-types="dynamic" style="display: none; background: #7C3AED; border-radius: 24px; padding: 40px 20px; height: 240px; align-items: center; justify-content: center;">
+                                    <button class="btn btn-large" style="background: rgba(255, 255, 255, 0); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.3);">Button</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sizes Section -->
+                    <div class="content-section" id="sizes" style="margin-top: 40px;">
+                        <h3 class="subsection-title" id="sizes-title">Sizes</h3>
+                        <p class="section-description" style="margin-bottom: 20px;">Button sizes ensure appropriate touch targets and visual hierarchy within the app.</p>
+
+                        <div style="background: var(--neutral-0); border-radius: 24px; padding: 40px; margin: 20px 0; overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 16px; line-height: 20px;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <th style="text-align: left; padding: 12px 16px; font-weight: 600; color: var(--text-primary);">Size</th>
+                                        <th style="text-align: left; padding: 12px 16px; font-weight: 600; color: var(--text-primary);">Visual</th>
+                                        <th style="text-align: left; padding: 12px 16px; font-weight: 600; color: var(--text-primary);">Height</th>
+                                        <th style="text-align: left; padding: 12px 16px; font-weight: 600; color: var(--text-primary);">Font Size</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid var(--border-color-light);">
+                                        <td style="padding: 16px; font-weight: 600; vertical-align: middle;">Large</td>
+                                        <td style="padding: 16px; vertical-align: middle;">
+                                            <button class="btn btn-primary btn-large">Button</button>
+                                        </td>
+                                        <td style="padding: 16px; vertical-align: middle;">48px/dp</td>
+                                        <td style="padding: 16px; vertical-align: middle;">18px/dp</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid var(--border-color-light);">
+                                        <td style="padding: 16px; font-weight: 600; vertical-align: middle;">Medium</td>
+                                        <td style="padding: 16px; vertical-align: middle;">
+                                            <button class="btn btn-primary btn-medium">Button</button>
+                                        </td>
+                                        <td style="padding: 16px; vertical-align: middle;">32px/dp</td>
+                                        <td style="padding: 16px; vertical-align: middle;">14px/dp</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 16px; font-weight: 600; vertical-align: middle;">Small</td>
+                                        <td style="padding: 16px; vertical-align: middle;">
+                                            <button class="btn btn-primary btn-small">Button</button>
+                                        </td>
+                                        <td style="padding: 16px; vertical-align: middle;">28px/dp</td>
+                                        <td style="padding: 16px; vertical-align: middle;">12px/dp</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Semantic Token Colors Section -->
+                    <div class="content-section" id="semantic-tokens" style="margin-top: 40px;">
+                        <h3 class="subsection-title" id="semantic-tokens-title">Token colors</h3>
+                        <p class="section-description" style="margin-bottom: 20px;">Button tokens adapt to light, dark, and dynamic modes to ensure proper contrast and visual hierarchy.</p>
+
+                        <!-- Mode Tabs -->
+                        <div class="mode-tabs" style="display: flex; gap: 0; margin-bottom: 0; border-bottom: none;">
+                            <div class="mode-tab active" data-mode="light" style="padding: 16px 20px; font-size: 16px; line-height: 18px; color: var(--primary-bg); cursor: pointer; border-bottom: 4px solid var(--primary-bg); background: transparent;">
+                                Light
+                            </div>
+                            <div class="mode-tab" data-mode="dark" style="padding: 16px 20px; font-size: 16px; line-height: 18px; color: var(--text-primary); cursor: pointer; border-bottom: 4px solid transparent; background: transparent;">
+                                Dark
+                            </div>
+                            <div class="mode-tab" data-mode="dynamic" style="padding: 16px 20px; font-size: 16px; line-height: 18px; color: var(--text-primary); cursor: pointer; border-bottom: 4px solid transparent; background: transparent;">
+                                Dynamic
+                            </div>
+                        </div>
+
+                        <!-- Semantic Tokens Table -->
+                        <div style="border: 1px solid var(--border-color); border-radius: 20px; padding: 12px; margin-top: 0; overflow-x: auto; background: var(--table-bg);">
+                            <div style="background: var(--table-header-bg); border-radius: 12px; overflow: hidden;">
+                                <!-- Table Header -->
+                                <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                    <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center; font-size: 16px; line-height: 20px; font-weight: 400; color: var(--text-primary);">Display</div>
+                                    <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; font-weight: 400; color: var(--text-primary);">Token name</div>
+                                    <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; font-weight: 400; color: var(--text-primary);">Role</div>
+                                    <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; font-weight: 400; color: var(--text-primary);">Usage</div>
+                                </div>
+
+                                <!-- Light Mode Content -->
+                                <div class="mode-content" data-mode="light">
+                                    <!-- Primary Background -->
+                                    <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: #004ace; border: 1px solid var(--neutral-30, #ababab); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Primary-Background</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Background color for primary action buttons</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Primary button background</div>
+                                    </div>
+                                    <!-- Primary Text -->
+                                    <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: var(--bg-primary); border: 1px solid var(--neutral-30); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Primary-Text</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Text color for primary button labels</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Primary button text</div>
+                                    </div>
+                                    <!-- Secondary Background -->
+                                    <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: #e8e8e8; border: 1px solid var(--neutral-30, #ababab); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Secondary-Background</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Background color for secondary action buttons</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Secondary button background</div>
+                                    </div>
+                                    <!-- Secondary Text -->
+                                    <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: #181818; border: 1px solid var(--neutral-30, #ababab); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Secondary-Text</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Text color for secondary button labels</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Secondary button text</div>
+                                    </div>
+                                    <!-- Tertiary Background -->
+                                    <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: var(--bg-primary); border: 1px solid var(--neutral-30); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Tertiary-Background</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Background color for tertiary action buttons</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Tertiary button background</div>
+                                    </div>
+                                    <!-- Disabled Background -->
+                                    <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: #dcdcdc; border: 1px solid var(--neutral-30, #ababab); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Disabled-Background</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Background color for disabled buttons</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Disabled button state</div>
+                                    </div>
+                                    <!-- Disabled Text -->
+                                    <div style="display: flex;">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: #ababab; border: 1px solid var(--neutral-30, #ababab); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Disabled-Text</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Text color for disabled button labels</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Disabled button text</div>
+                                    </div>
+                                </div>
+
+                                <!-- Dark Mode Content -->
+                                <div class="mode-content" data-mode="dark" style="display: none;">
+                                    <!-- Primary Background -->
+                                    <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: #0055ff; border: 1px solid var(--neutral-30, #ababab); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Primary-Background</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Background color for primary action buttons</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Primary button background</div>
+                                    </div>
+                                    <!-- Primary Text -->
+                                    <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: var(--bg-primary); border: 1px solid var(--neutral-30); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Primary-Text</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Text color for primary button labels</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Primary button text</div>
+                                    </div>
+                                    <!-- Secondary Background -->
+                                    <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: #2a2a2a; border: 1px solid var(--neutral-30, #ababab); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Secondary-Background</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Background color for secondary action buttons</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Secondary button background</div>
+                                    </div>
+                                    <!-- Secondary Text -->
+                                    <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: #e8e8e8; border: 1px solid var(--neutral-30, #ababab); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Secondary-Text</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Text color for secondary button labels</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Secondary button text</div>
+                                    </div>
+                                    <!-- Tertiary Background -->
+                                    <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: #1a1a1a; border: 1px solid var(--neutral-30, #ababab); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Tertiary-Background</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Background color for tertiary action buttons</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Tertiary button background</div>
+                                    </div>
+                                    <!-- Disabled Background -->
+                                    <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: #3a3a3a; border: 1px solid var(--neutral-30, #ababab); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Disabled-Background</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Background color for disabled buttons</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Disabled button state</div>
+                                    </div>
+                                    <!-- Disabled Text -->
+                                    <div style="display: flex;">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: #666666; border: 1px solid var(--neutral-30, #ababab); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Disabled-Text</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Text color for disabled button labels</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Disabled button text</div>
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic Mode Content -->
+                                <div class="mode-content" data-mode="dynamic" style="display: none;">
+                                    <!-- Primary Background -->
+                                    <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: #004ace; border: 1px solid var(--neutral-30, #ababab); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Primary-Background</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Background color for primary action buttons (adapts to system theme)</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Primary button background</div>
+                                    </div>
+                                    <!-- Primary Text -->
+                                    <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: var(--bg-primary); border: 1px solid var(--neutral-30); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Primary-Text</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Text color for primary button labels (adapts to system theme)</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Primary button text</div>
+                                    </div>
+                                    <!-- Secondary Background -->
+                                    <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: #e8e8e8; border: 1px solid var(--neutral-30, #ababab); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Secondary-Background</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Background color for secondary action buttons (adapts to system theme)</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Secondary button background</div>
+                                    </div>
+                                    <!-- Secondary Text -->
+                                    <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: #181818; border: 1px solid var(--neutral-30, #ababab); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Secondary-Text</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Text color for secondary button labels (adapts to system theme)</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Secondary button text</div>
+                                    </div>
+                                    <!-- Tertiary Background -->
+                                    <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: var(--bg-primary); border: 1px solid var(--neutral-30); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Tertiary-Background</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Background color for tertiary action buttons (adapts to system theme)</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Tertiary button background</div>
+                                    </div>
+                                    <!-- Disabled Background -->
+                                    <div style="display: flex; border-bottom: 1px solid var(--border-color-light);">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: #dcdcdc; border: 1px solid var(--neutral-30, #ababab); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Disabled-Background</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Background color for disabled buttons (adapts to system theme)</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Disabled button state</div>
+                                    </div>
+                                    <!-- Disabled Text -->
+                                    <div style="display: flex;">
+                                        <div style="width: 91px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; justify-content: center;">
+                                            <div style="width: 20px; height: 20px; background: #ababab; border: 1px solid var(--neutral-30, #ababab); border-radius: 4px;"></div>
+                                        </div>
+                                        <div style="width: 140px; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Disabled-Text</div>
+                                        <div style="flex: 1; padding: 20px; border-right: 1px solid var(--border-color-light); display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Text color for disabled button labels (adapts to system theme)</div>
+                                        <div style="width: 140px; padding: 20px; display: flex; align-items: center; font-size: 16px; line-height: 20px; color: var(--text-primary);">Disabled button text</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Best Practices Section -->
+                    <div class="content-section" id="best-practices" style="margin-top: 40px;">
+                        <h3 class="subsection-title" id="best-practices-title">Best practices</h3>
+                        
+                        <div class="two-column" style="gap: 20px; margin-top: 20px;">
+                            <div class="left">
+                                <div style="border-radius: 20px; overflow: hidden;">
+                                    <div style="background: var(--bg-primary); height: 240px; position: relative;">
+                                        <div style="position: absolute; bottom: 74px; left: 50%; transform: translateX(-50%); border: 5.4px solid var(--neutral-50); border-radius: 13.5px; width: 253px; height: 521px; background: #004ace; display: flex; align-items: flex-end; padding-bottom: 20px; justify-content: center;">
+                                            <button class="btn btn-primary btn-small" style="width: 173px;">Continue</button>
+                                        </div>
+                                    </div>
+                                    <div style="background: #f94343; border-top: 4px solid white; padding: 8px 12px; display: flex; align-items: center; gap: 10px;">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M18 6L6 18M6 6l12 12"/>
+                                        </svg>
+                                        <span style="font-size: 18px; line-height: 22px; font-weight: 400;">Don't</span>
+                                    </div>
+                                </div>
+                                <p style="font-size: 18px; line-height: 22px; margin-top: 12px;">Don't make small-sized buttons go full width</p>
+                            </div>
+                            <div class="right">
+                                <div style="border-radius: 20px; overflow: hidden;">
+                                    <div style="background: var(--bg-primary); height: 240px; position: relative;">
+                                        <div style="position: absolute; bottom: 74px; left: 50%; transform: translateX(-50%); border: 5.4px solid var(--neutral-50); border-radius: 13.5px; width: 253px; height: 548px; background: #004ace; display: flex; align-items: flex-end; padding-bottom: 20px; justify-content: center;">
+                                            <button class="btn btn-primary btn-small" style="width: 173px; background: #10d669;">Continue</button>
+                                        </div>
+                                    </div>
+                                    <div style="background: #f94343; border-top: 4px solid white; padding: 8px 12px; display: flex; align-items: center; gap: 10px;">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M18 6L6 18M6 6l12 12"/>
+                                        </svg>
+                                        <span style="font-size: 18px; line-height: 22px; font-weight: 400;">Don't</span>
+                                    </div>
+                                </div>
+                                <p style="font-size: 18px; line-height: 22px; margin-top: 12px;">Don't change colors, spacing, typography or icons outside of the parameters provided.</p>
+                            </div>
+                        </div>
+
+                        <!-- Caution Best Practices -->
+                        <div class="two-column" style="gap: 20px; margin-top: 40px;">
+                            <div class="left">
+                                <div style="border-radius: 20px; overflow: hidden;">
+                                    <div style="background: var(--bg-primary); height: 240px; position: relative;">
+                                        <div style="position: absolute; bottom: 74px; left: 50%; transform: translateX(-50%); border: 5.4px solid var(--neutral-50); border-radius: 13.5px; width: 253px; height: 521px; background: #004ace; display: flex; align-items: flex-end; padding-bottom: 20px; justify-content: center;">
+                                            <button class="btn btn-primary btn-medium" style="width: 173px; opacity: 0.5; background: #0d55d9;">Watch on</button>
+                                        </div>
+                                    </div>
+                                    <div style="background: var(--yellow-30); border-top: 4px solid white; padding: 8px 12px; display: flex; align-items: center; gap: 10px;">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"/>
+                                            <path d="M12 8v4M12 16h.01"/>
+                                        </svg>
+                                        <span style="font-size: 18px; line-height: 22px; font-weight: 400; color: var(--text-primary);">Caution</span>
+                                    </div>
+                                </div>
+                                <p style="font-size: 18px; line-height: 22px; margin-top: 12px;">Avoid using disabled or low-opacity buttons for primary actions as they may not meet accessibility contrast requirements in light themes.</p>
+                            </div>
+                            <div class="right">
+                                <div style="border-radius: 20px; overflow: hidden;">
+                                    <div style="background: var(--bg-primary); height: 240px; position: relative;">
+                                        <div style="position: absolute; bottom: 74px; left: 50%; transform: translateX(-50%); border: 5.4px solid var(--neutral-50); border-radius: 13.5px; width: 253px; height: 521px; background: #004ace; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 20px; gap: 12px;">
+                                            <button class="btn btn-primary btn-medium" style="width: 100%; background: #0d55d9;">Primary Action</button>
+                                            <button class="btn btn-primary btn-medium" style="width: 100%; background: #0d55d9;">Secondary Action</button>
+                                            <button class="btn btn-primary btn-medium" style="width: 100%; background: #0d55d9;">Tertiary Action</button>
+                                        </div>
+                                    </div>
+                                    <div style="background: var(--yellow-30); border-top: 4px solid white; padding: 8px 12px; display: flex; align-items: center; gap: 10px;">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"/>
+                                            <path d="M12 8v4M12 16h.01"/>
+                                        </svg>
+                                        <span style="font-size: 18px; line-height: 22px; font-weight: 400; color: var(--text-primary);">Caution</span>
+                                    </div>
+                                </div>
+                                <p style="font-size: 18px; line-height: 22px; margin-top: 12px;">Don't use multiple primary buttons on the same screen. Reserve primary buttons for the single most important action to maintain clear visual hierarchy.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- On This Page Sidebar -->
+            <div class="on-this-page">
+                <div class="on-this-page-title">ON THIS PAGE</div>
+                <a href="#prime-button-title" class="on-this-page-item" data-section="prime-button">Prime button</a>
+                <a href="#types-title" class="on-this-page-item" data-section="types">Types</a>
+                <a href="#sizes-title" class="on-this-page-item" data-section="sizes">Sizes</a>
+                <a href="#semantic-tokens-title" class="on-this-page-item" data-section="semantic-tokens">Token colors</a>
+                <a href="#best-practices-title" class="on-this-page-item" data-section="best-practices">Best Practices</a>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-pill">
+                <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                    <path d="M12 8l-4 4 4 4M8 12h8" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <div class="nav-pill-content">
+                    <div class="nav-pill-label">Button</div>
+                    <div class="nav-pill-title">Overview</div>
+                </div>
+            </div>
+            <div class="nav-pill">
+                <div class="nav-pill-content">
+                    <div class="nav-pill-label">Button</div>
+                    <div class="nav-pill-title">Toggle</div>
+                </div>
+                <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="transform: rotate(180deg);">
+                    <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                    <path d="M12 8l-4 4 4 4M8 12h8" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const header = document.querySelector('header');
+
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            
+            // Update header position
+            if (sidebar.classList.contains('collapsed')) {
+                header.style.left = '60px';
+            } else {
+                header.style.left = '360px';
+            }
+        });
+
+        // Update active section in "On This Page" sidebar based on scroll position
+        const sections = document.querySelectorAll('.content-section[id]');
+        const navItems = document.querySelectorAll('.on-this-page-item');
+
+        function updateActiveSection() {
+            let current = '';
+            const scrollPosition = window.scrollY + 150; // Offset for header
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    current = sectionId;
+                }
+            });
+
+            // If we're at the top, default to first section
+            if (scrollPosition < sections[0].offsetTop) {
+                current = sections[0].getAttribute('id');
+            }
+
+            // If we're past the last section, keep the last one active
+            if (scrollPosition >= sections[sections.length - 1].offsetTop) {
+                current = sections[sections.length - 1].getAttribute('id');
+            }
+
+            navItems.forEach(item => {
+                const itemSection = item.getAttribute('data-section');
+                if (itemSection === current) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        // Handle click events to scroll to section titles
+        navItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    // Use scrollIntoView which respects scroll-margin-top
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Update on scroll
+        window.addEventListener('scroll', updateActiveSection);
+        
+        // Update on page load
+        updateActiveSection();
+
+        // Mode tab switching for semantic tokens
+        const modeTabs = document.querySelectorAll('.mode-tab');
+        const modeContents = document.querySelectorAll('.mode-content');
+
+        modeTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const mode = this.getAttribute('data-mode');
+                
+                // Update tab styles
+                modeTabs.forEach(t => {
+                    t.classList.remove('active');
+                    t.style.color = '';
+                    t.style.borderBottomColor = 'transparent';
+                });
+                this.classList.add('active');
+                this.style.color = '';
+                this.style.borderBottomColor = '';
+                
+                // Update content visibility
+                modeContents.forEach(content => {
+                    if (content.getAttribute('data-mode') === mode) {
+                        content.style.display = '';
+                    } else {
+                        content.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Mode tab switching for button examples (Primary, Secondary, Tertiary)
+        const modeTabsTypes = document.querySelectorAll('.mode-tab-types');
+        const buttonExampleModes = document.querySelectorAll('.button-example-mode');
+
+        modeTabsTypes.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const mode = this.getAttribute('data-mode-types');
+                
+                // Update tab styles
+                modeTabsTypes.forEach(t => {
+                    t.classList.remove('active');
+                    t.style.color = '';
+                    t.style.borderBottomColor = 'transparent';
+                });
+                this.classList.add('active');
+                this.style.color = '';
+                this.style.borderBottomColor = '';
+                
+                // Update button example visibility
+                buttonExampleModes.forEach(example => {
+                    if (example.getAttribute('data-mode-types') === mode) {
+                        example.style.display = 'flex';
+                    } else {
+                        example.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Dark mode toggle functionality
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const htmlElement = document.documentElement;
+
+        // Check for saved theme preference or default to light mode
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        htmlElement.setAttribute('data-theme', currentTheme);
+
+        if (darkModeToggle) {
+            darkModeToggle.addEventListener('click', function() {
+                const currentTheme = htmlElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                htmlElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+        }
+    </script>
+</body>
+</html>
